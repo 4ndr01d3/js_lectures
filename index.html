@@ -1,0 +1,547 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/serif.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					## Modern JavaScript
+					Gustavo A. Salazar
+				</section>
+				<section data-markdown>
+					## A bit of History
+
+					_Versions of JS_
+					* Netscape & Origins
+					* ES5 - First actual standard
+					  * `'strict mode';`
+					* ES2015 - AKA ES6
+					* ES2016, ES2017 and ES.Next
+				</section>
+				<section>
+					<h2>Let's code</h2>
+					<ul>
+						<li>Create a <i>playground.html</i> file that contains this:
+							<pre>
+								<code class="hljs" style="word-wrap: break-word;">
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Playground&lt;/h1&gt;
+    &lt;div id="container"&gt;content&lt;/div&gt;
+    &lt;script&gt;
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+								</code>
+							</pre>
+						</li>
+						<li>Open it in the browser</li>
+						<li>Open the developer tools</li>
+					</ul>
+				</section>
+				<section data-markdown>
+					## Variables & Scope
+				</section>
+				<section data-markdown>
+					## Variables
+
+					* JavaScript is not typed
+
+					So this is valid
+
+					```
+					tmp = 4;
+					function f(){
+						tmp = 5;
+						console.log(tmp);
+					}
+					console.log(tmp);
+					f();
+					console.log(tmp);
+					```
+				</section>
+				<section>
+					<div data-markdown>
+						## Variables
+
+						* A bit better
+
+						```
+						var tmp = 4;
+						function f(){
+							var tmp = 5;
+							console.log(tmp);
+						}
+						console.log(tmp);
+						f();
+						console.log(tmp);
+						```
+					</div>
+					<div data-markdown class="fragment">
+						but...
+						```
+						var tmp = 4;
+						for (var i = 0; i < 2; i++){
+						  var tmp = 2;
+						  console.log(tmp);
+						}
+						console.log(tmp);
+						```
+					</div>
+				</section>
+				<section>
+					<div data-markdown>
+						## Variables _ES6_
+
+						* Constant: **const**
+
+						```
+						const tmp = 4;
+						for (var i = 0; i < 2; i++){
+						  const tmp = 2;
+						  console.log(tmp);
+						}
+						console.log(tmp);
+						console.log(i);
+						```
+					</div>
+					<div data-markdown class="fragment">
+						An array or object can be declared `const` and their parts can still be changed:
+						```
+						const list = [];
+						list[0] = 10;
+						console.log(list);
+						```
+					</div>
+				</section>
+				<section data-markdown>
+					## Variables _ES6_
+
+					* Variable: **let**
+
+					```
+					const tmp = 4;
+					for (let i = 0; i < 2; i++){
+					  const tmp = 2;
+					  console.log(tmp);
+					}
+					console.log(tmp);
+					console.log(i);
+					```
+				</section>
+
+
+				<section data-markdown>
+					## Arrow Functions
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					it is just a convenient way to write functions.
+
+					From this:
+					```
+					function square(x){
+						return x * x;
+					}
+					```
+					to this:
+					```
+					const square = (x) => {
+						return x * x;
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					If only one parameter you can omit the parenthesis
+					```
+					const square = x => {
+						return x * x;
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					If only one expression in the body of the funtion you can omit the `{}` and the `return`
+					```
+					const square = x => x * x;
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					In case of returning an object:
+					```
+					const square = x => ({value: x, result:x*x});
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					It doesn't have to be declared.
+					```
+					(x => x * x)(7);
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					You can pass them as parameters of other functions
+					```
+					const list = [2,5,8,10];
+					list.map(x => x * x);
+					```
+				</section>
+				<section data-markdown>
+					## Arrow Functions
+
+					The scope changes
+					```
+					document.getElementById('container')
+						.addEventListener('click',
+							function (){console.log(this)}
+						)
+					```
+
+					v.s.
+
+					```
+					document.getElementById('container')
+						.addEventListener('click',
+							()=>console.log(this)
+						)
+					```
+				</section>
+
+				<section data-markdown>
+					## Parameter Handling
+
+					Default values:
+					```
+					function square(x = 5){
+						return x * x;
+					}
+					```
+					Or in an arrow function:
+					```
+					const square = (x = 5) => x * x;
+					```
+				</section>
+				<section data-markdown>
+					## Parameter Handling
+
+					get the rest of the parameters:
+					```
+					function sum(x, ...rest){
+						let acc = x;
+						for (let i=0; i < rest.length; i++){
+							acc += rest[i];
+						}
+						return acc;
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Parameter Handling
+
+					Spread Operator:
+					```
+					const numbers= [9, 8, 7];
+					sum(10, ...numbers)
+					```
+				</section>
+
+				<section data-markdown>
+					## Destructuring
+				</section>
+				<section data-markdown>
+					## Destructuring
+
+					Array Destructuring:
+					```
+					let [a,b,c] = [1, 'some text', 7];
+					[a, c] = [c, a];
+					```
+				</section>
+				<section data-markdown>
+					## Destructuring
+
+					Object Matching:
+					```
+					const square = x => ({value: x, result: x*x});
+					const {value, result} = square(27);
+					```
+				</section>
+				<section data-markdown>
+					## Destructuring
+
+					Deep Matching:
+					```
+					const distanceToOrigin = ([x, y]) => (
+						{
+							point: {x, y},
+							origin:[0, 0],
+							distance: Math.sqrt(x**2 + y**2)
+						}
+					);
+					const {
+						point:{x: x1, y: y1},
+						origin:[x0, y0],
+						distance
+					} = distanceToOrigin([3,4]);
+					```
+				</section>
+
+				<section data-markdown>
+					## Loops
+				</section>
+				<section data-markdown>
+					## Loops `for ... of`
+
+					Use `for ... of` in arrays:
+
+					```
+					for (const x of [1,2,3]){
+						console.log(x);
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Loops `for ... in`
+
+					Use `for ... in` in objects:
+
+					```
+					for (const x in {'first':1, 'second':2}){
+						console.log(x);
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Loops `Array` methods
+
+					`forEach`:
+
+					```
+					[1,2,3].forEach((value, i) => console.log(i, value));
+					```
+
+					`map`:
+
+					```
+					[1,2,3].map(value => value * 2);
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+				</section>
+				<section data-markdown>
+					## Objects
+
+					Declaration
+
+					```
+					const name = 'John';
+					const surname = 'Doe';
+
+					const obj1 = {
+						"name": name,
+						"surname": surname,
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+
+					If the key is a single word, the quotes are unnecessary:
+					```
+					const obj2 = {
+						name: name,
+						surname: surname,
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+
+					And if the name of the variable will be the same name of the key it can
+					be written like:
+					```
+					const obj3 = {name, surname};
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+
+					Now the key can be a calculation:
+					```
+					const obj4 = {
+						name,
+						surname,
+						[name+surname]: (name+surname).length,
+					};
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+
+					Nicer sintax for methods.
+					From:
+					```
+					const math1 = {
+						pow: function(x) {
+							return x * x;
+						}
+					}
+					```
+					To:
+					```
+					const math2 = {
+						pow(x) {
+							return x * x;
+						}
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Objects
+					But you can always use arrow functions:
+					```
+					const math4 = {
+						pow: x => x * x,
+					}
+					```
+				</section>
+				<section data-markdown>
+					## Template literals
+
+					Now you can create a multiline string that include expressions:
+					```
+					const person = {name:'John', surname:'Doe'};
+					const text = `here is a...
+						...
+						lot of text and here is an expression: ${5+3}.
+					By: ${person.surname}, ${person.name}`
+					```
+				</section>
+				<section data-markdown>
+					## Classes
+				</section>
+				<section data-markdown>
+					## Classes
+
+					Definition , methods and constructor:
+					```
+					class Person {
+						constructor(name, surname) {
+							this.name = name;
+							this.surname = surname;
+						}
+						getFullName() {
+							return `${this.surname}, ${this.name}`;
+						}
+					}
+					const p= new Person('John', 'Doe');
+					console.log(p.getFullName());
+					```
+				</section>
+				<section data-markdown>
+					## Classes
+
+					Inheritance:
+					```
+					class Doctor extends Person{
+						getFullName() {
+							return `Dr. ${super.getFullName()}`;
+						}
+					}
+					const phd= new Doctor('John', 'Doe');
+					console.log(phd.getFullName());
+					```
+				</section>
+				<section data-markdown>
+					## Classes
+
+					Getters:
+					```
+					class Person{
+						constructor(name, surname) {
+							this.name = name;
+							this.surname = surname;
+						}
+						get fullName() {
+							return `${this.surname}, ${this.name}`;
+						}
+					}
+					const p= new Person('John', 'Doe');
+					console.log(p.fullName);
+					```
+				</section>
+				<section data-markdown>
+					## Classes
+
+					Setters:
+					```
+					class Person{
+						constructor(name, surname) {
+							this.name = name;
+							this.surname = surname;
+						}
+						set age(value) {
+							this._age = value;
+							this.year_of_birth = (new Date()).getFullYear() - value;
+						}
+					}
+					const p= new Person('John', 'Doe');
+					p.age = 40;
+					console.log(p.year_of_birth);
+					```
+				</section>
+				<section data-markdown>
+					## Modules
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
