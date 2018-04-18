@@ -25,15 +25,24 @@
 		<div class="reveal">
 			<div class="slides">
 				<section data-markdown>
-					## Modern JavaScript
+					## Modern JavaScript & React
 					Gustavo A. Salazar
+
+					https://4ndr01d3.github.io/js_lectures/
+				</section>
+				<section data-markdown>
+					## Modern JavaScript & React
+
+					1. Modern JavaScript
+					2. Node, npm and webpack
+					3. React
 				</section>
 				<section data-markdown>
 					## A bit of History
 
 					_Versions of JS_
 					* Netscape & Origins
-					* ES5 - First actual standard
+					* ECMAScript 5 - ES5 - First actual standard
 					  * `'strict mode';`
 					* ES2015 - AKA ES6
 					* ES2016, ES2017 and ES.Next
@@ -48,8 +57,6 @@
   &lt;body&gt;
     &lt;h1&gt;Playground&lt;/h1&gt;
     &lt;div id="container"&gt;content&lt;/div&gt;
-    &lt;script&gt;
-    &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 								</code>
@@ -220,18 +227,20 @@
 
 					The scope changes
 					```
+					this.x = 8;
 					document.getElementById('container')
 						.addEventListener('click',
-							function (){console.log(this)}
+							function (){console.log(this.x)}
 						)
 					```
 
 					v.s.
 
 					```
+					this.x = 8;
 					document.getElementById('container')
 						.addEventListener('click',
-							()=>console.log(this)
+							()=>console.log(this.x)
 						)
 					```
 				</section>
@@ -249,18 +258,23 @@
 					```
 					const square = (x = 5) => x * x;
 					```
+
+					Notice that
+					```
+					null !== undefined
+					```
 				</section>
 				<section data-markdown>
 					## Parameter Handling
 
 					get the rest of the parameters:
 					```
-					function sum(x, ...rest){
-						let acc = x;
-						for (let i=0; i < rest.length; i++){
-							acc += rest[i];
+					function sum(x, ...allTheOtherParameters){
+						let total = x;
+						for (let i=0; i < allTheOtherParameters.length; i++){
+							total += allTheOtherParameters[i];
 						}
-						return acc;
+						return total;
 					}
 					```
 				</section>
@@ -300,18 +314,12 @@
 
 					Deep Matching:
 					```
-					const distanceToOrigin = ([x, y]) => (
-						{
-							point: {x, y},
-							origin:[0, 0],
-							distance: Math.sqrt(x**2 + y**2)
-						}
-					);
-					const {
-						point:{x: x1, y: y1},
-						origin:[x0, y0],
-						distance
-					} = distanceToOrigin([3,4]);
+					const circle = {
+						center: [3,4],
+						radius: 4,
+					}
+
+					const {center: [x,y], radius: r} = circle;
 					```
 				</section>
 
@@ -330,15 +338,19 @@
 					```
 				</section>
 				<section data-markdown>
-					## Loops `for ... in`
+					## Loops
 
-					Use `for ... in` in objects:
+					Use `Object.keys` in objects:
 
 					```
-					for (const x in {'first':1, 'second':2}){
+					const obj = {'first':1, 'second':2};
+					for (const x of Object.keys(obj) ){
 						console.log(x);
 					}
 					```
+					Alternatives:
+					* `Object.values`
+					* `Object.entries`
 				</section>
 				<section data-markdown>
 					## Loops `Array` methods
@@ -353,6 +365,39 @@
 
 					```
 					[1,2,3].map(value => value * 2);
+					```
+
+				</section>
+				<section data-markdown>
+					## `Array` methods
+
+					`filter`:
+
+					```
+					[1,2,3].filter(value => value % 2 === 0);
+					```
+
+					`find`:
+
+					```
+					[1,2,3].find(value => value % 2 === 0);
+					```
+				</section>
+				<section data-markdown>
+					## `Array` methods
+
+					`every`:
+
+					```
+					[1, 30, 39, 29, 10, 13].every(x => x < 50);
+					[1, 30, 39, 29, 10, 13].every(x => x < 10);
+					```
+
+					`some`:
+
+					```
+					[1, 30, 39, 29, 10, 13].some(x => x < 10);
+					[1, 30, 39, 29, 10, 13].some(x => x < 0);
 					```
 				</section>
 				<section data-markdown>
@@ -396,7 +441,7 @@
 				<section data-markdown>
 					## Objects
 
-					Now the key can be a calculation:
+					Now the key can be computed (AKA. ComputedPropertyName):
 					```
 					const obj4 = {
 						name,
@@ -412,16 +457,16 @@
 					From:
 					```
 					const math1 = {
-						pow: function(x) {
-							return x * x;
+						pow: function(x, y) {
+							return x ** y;
 						}
 					}
 					```
 					To:
 					```
 					const math2 = {
-						pow(x) {
-							return x * x;
+						pow(x, y) {
+							return x ** y;
 						}
 					}
 					```
@@ -431,7 +476,7 @@
 					But you can always use arrow functions:
 					```
 					const math4 = {
-						pow: x => x * x,
+						pow: (x, y) => x ** y,
 					}
 					```
 				</section>
@@ -475,7 +520,7 @@
 					```
 					class Doctor extends Person{
 						getFullName() {
-							return `Dr. ${super.getFullName()}`;
+							return `${super.getFullName()} (Dr.)`;
 						}
 					}
 					const phd= new Doctor('John', 'Doe');
@@ -521,7 +566,14 @@
 					```
 				</section>
 				<section data-markdown>
-					## Modules
+					## Next week
+
+					* node
+					* npm
+					* webpack
+					* More JavaScript
+						* Modules
+						* Fetch
 				</section>
 
 			</div>
