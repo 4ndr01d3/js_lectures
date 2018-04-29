@@ -1,0 +1,472 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/serif.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					## Modern JavaScript & React
+					Gustavo A. Salazar
+
+					https://4ndr01d3.github.io/js_lectures/
+				</section>
+        <section data-markdown>
+          ## Setup
+
+          * Get the Lectures repo:
+
+          ```
+          git clone https://github.com/4ndr01d3/js_lectures.git
+          ```
+          * Copy last week Example:
+
+          ```
+          cp -R js_lectures/npm_new_package reactExample
+          cd reactExample
+          ```
+          * Install dependencies and start app:
+
+          ```
+          npm install
+          npm run start
+          ```
+        </section>
+        <section data-markdown>
+          ## Lyrics Finder
+
+          We are going to build an app that let you select an artist,
+          It will display the available songs  if the user selects one,
+          it will display the lyrics
+				</section>
+        <section data-markdown>
+          ## Lyrics Finder
+
+          ![Image of the App Sketch](sketch.jpg)
+				</section>
+        <section data-markdown>
+          ## App placeholder
+
+          src/App.js
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+          class App extends React.Component {
+            render() {
+              return (
+                &lt;div>
+                  &lt;header>
+                    &lt;div>Artist Selector&lt;/div>
+                  &lt;/header>
+                  &lt;div>Song List&lt;/div>
+                  &lt;div>Song Lyrics&lt;/div>
+                &lt;/div>
+              );
+            }
+          }
+          export default App;
+
+          ```
+				</section>
+        <section data-markdown>
+          ## Using App in index
+
+          src/index.js
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+          import App from "./App";
+
+          ReactDOM.render(&lt;App />, document.getElementById("index"));
+          ```
+				</section>
+        <section data-markdown>
+          ## Artist Selector
+
+          src/artist-selector.js
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+
+          const ArtistSelector = ({artists=[]}) => (
+            &lt;select>
+              &lt;option value={null}>Select an artist...&lt;/option>
+              {
+                artists.map(artist =>
+                  &lt;option value={artist} key={artist}>
+                   {artist}
+                  &lt;/option>
+                )
+              }
+            &lt;/select>
+          );
+          export default ArtistSelector;
+          ```
+				</section>
+        <section data-markdown>
+          ## Adding ArtistSelector
+
+          src/App.js
+          ```
+          ...
+          import ArtistSelector from "./artist-selector";
+
+          const data = {
+            "Amy Winehouse": ["Rehab", "Back to Black", "You know I'm not good"],
+            "Queen": ["Bicycle race", "Bohemian Rhapsody", "flash"]
+          };
+          ...
+          +    &lt;ArtistSelector artists={Object.keys(data)} />
+          -    &lt;div>Artist Selector&lt;/div>
+          ...
+
+          ```
+        </section>
+        <section data-markdown>
+          ## SongList
+
+          src/song-list.js
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+
+          const SongList = ({songs=[]}) => (
+            &lt;React.Fragment>
+              {
+                songs.map(song =>
+                  &lt;div key={song}>
+                   &lt;a href="#">{song}&lt;/a>
+                  &lt;/div>
+                )
+              }
+            &lt;/React.Fragment>
+          );
+          export default SongList;
+          ```
+        </section>
+        <section data-markdown>
+          ## Adding SongList
+
+          src/App.js
+          ```
+          ...
+          import SongList from "./song-list";
+          ...
+          +    &lt;SongList songs={data.Queen} />
+          -    &lt;div>Song List&lt;/div>
+          ...
+
+          ```
+				</section>
+        <section data-markdown>
+          ## LyricsDisplay
+
+          src/lyrics-display.js
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+
+          const STATUS = {
+            LOADING: 0,
+            READY: 1,
+            FAILED: -1,
+            EMPTY: -2,
+          }
+
+          class LyricsDisplay extends React.Component {
+            constructor(){
+              super();
+              this.state = {
+                status: STATUS.LOADING,
+                text: null,
+              }
+            }
+            render(){
+              const {artist, song} = this.props;
+              const {status, text} = this.state;
+              return (
+                &lt;section className="lyrics">
+                  &lt;header>
+                   {song} by {artist}
+                  &lt;/header>
+                  &lt;div>
+                    {status===STATUS.LOADING && 'Loading...'}
+                  &lt;/div>
+                &lt;/section>
+              );
+            }
+          }
+          export default LyricsDisplay;
+          ```
+        </section>
+        <section data-markdown>
+          ## Adding Lyrics Display
+
+          src/App.js
+          ```
+          ...
+          import LyricsDisplay from "./lyrics-display";
+
+          ...
+          +    &lt;LyricsDisplay artist={'Queen'} song={'flash'}/>
+          -    &lt;div>Song Lyrics&lt;/div>
+          ...
+
+          ```
+				</section>
+        <section data-markdown>
+          ## Wiring: Top-down
+
+          src/App.js
+          ```
+          class App extends React.Component {
+            constructor(){
+              super();
+              this.state={
+                artist:null,
+                song:null,
+              }
+            }
+            render() {
+              const {artist, song} = this.state;
+              return (
+                &lt;div>
+                  &lt;header>
+                    &lt;ArtistSelector artists={Object.keys(data)} />
+                  &lt;/header>
+                  &lt;SongList songs={artist ? data[artist] : []} />
+                  &lt;LyricsDisplay artist={artist} song={song}/>
+                &lt;/div>
+              );
+            }
+          }
+          // try $r.setState({artist:"Queen"}) in React console
+          ```
+				</section>
+        <section data-markdown>
+          ## Wiring: Bottom-up
+          **[Artist]**
+
+          src/artist-selector.js
+          ```
+          ...
+          const ArtistSelector = ({artists=[], onChange=null}) => (
+            &lt;select onChange={onChange}>
+          ...
+
+          ```
+          src/App.js
+          ```
+          ...
+          handleChange = (evt) => {
+            console.log('this is:', evt.target.value);
+          }
+          ...
+            &lt;ArtistSelector artists={Object.keys(data)} onChange={this.handleChange}/>
+          ...
+
+          ```
+        </section>
+        <section data-markdown>
+          ## (Adding a babel plugin)
+          The syntax below is not part of the standard yet.
+          ```
+          handleChange = (evt) => {
+          ```
+          But it can be supported via plugins in babel:
+          ```
+          npm install --save-dev babel-plugin-transform-class-properties
+          ```
+          .babelrc
+          ```
+          {
+            "presets": ["env", "react"],
+            "plugins": ["transform-class-properties"]
+          }
+          ```
+				</section>
+        <section data-markdown>
+          ## Wiring: Bottom-up
+          **[Artist]**
+
+          src/App.js
+          ```
+          ...
+          handleChange = (evt) => {
+            this.setState({artist:evt.target.value});
+          }
+          ...
+          ```
+        </section>
+        <section data-markdown>
+          ## Wiring: Bottom-up
+          **[Song]**
+
+          src/song-list.js
+          ```
+          ...
+          const SongList = ({songs=[], onClick=null}) => (
+          ...
+          &lt;a onClick={onClick}>{song}&lt;/a>
+          ...
+          ```
+          src/App.js
+          ```
+          ...
+          handleClick = (evt) => {
+            this.setState({song:evt.target.text});
+          }
+          ...
+          &lt;SongList songs={artist ? data[artist] : []} onClick={this.handleClick}/>
+          ...
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+          **[Locally]**
+
+          ```
+          mkdir data
+          cp ../songsByArtists.json data/
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+          **[Locally]**
+
+          src/App.js
+          ```
+          - const data = { ... }
+          class App extends React.Component {
+            constructor(){
+              super();
+              this.state={
+                artist:null,
+                song:null,
+                data:{},
+              }
+              this.getData();
+            }
+            getData = () => {
+              fetch("./data/songsByArtists.json")
+                .then(r=>r.json())
+                .then(r=>{
+                  this.setState({data: r});
+                })
+            }
+            ...
+            render() {
+              const {artist, song, data} = this.state;
+            ...
+
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+          **[From an API]**
+
+          src/lyrics-display.js[_uploadLyrics()]
+          ```
+          _uploadLyrics = (artist, song)=> {
+            if (artist && song) {
+              fetch(`${api}/${artist}/${song}/`)
+                .then(r=>{
+                  if (!r.ok) throw Error(response.statusText);
+                  return r.json();
+                })
+                .then(r=>{
+                  this.setState({status:STATUS.READY, text:r.lyrics});
+                })
+                .catch(r=>{
+                  this.setState({status:STATUS.FAILED});
+                });
+            }else if(!song){
+              this.setState({status:STATUS.EMPTY});
+            }
+          }
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+          **[From an API]**
+
+          src/lyrics-display.js
+          ```
+          componentDidMount() {
+            const {artist, song} = this.props;
+            this._uploadLyrics(artist, song);
+          }
+          componentDidUpdate(prevProps) {
+            const {artist, song} = this.props;
+            const {artist:oldArtist, song:oldSong} = prevProps;
+            if (artist!==oldArtist || song!==oldSong)
+              this._uploadLyrics(artist, song);
+          }
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+          **[From an API]**
+
+          src/lyrics-display.js
+          ```
+          render(){
+            const {artist, song} = this.props;
+            const {status, text} = this.state;
+            return (
+              &lt;section className="lyrics">
+                &lt;header>
+                  {song} by {artist}
+                &lt;/header>
+                &lt;div>
+                  {status===STATUS.EMPTY && ''}
+                  {status===STATUS.LOADING && 'Loading...'}
+                  {status===STATUS.FAILED && 'ERROR: There was aproblem loading your file'}
+                  {status===STATUS.READY && &lt;pre>{text}&lt;/pre>}
+                &lt;/div>
+              &lt;/section>
+            );
+          }
+
+          ```
+        </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
