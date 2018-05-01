@@ -54,15 +54,77 @@
         <section data-markdown>
           ## Lyrics Finder
 
-          We are going to build an app that let you select an artist,
-          It will display the available songs  if the user selects one,
-          it will display the lyrics
+          We are going to build an app that let you select an artist.
+
+          It will display the available songs.
+
+          If the user selects one song, the app will display the lyrics.
 				</section>
         <section data-markdown>
           ## Lyrics Finder
 
           ![Image of the App Sketch](sketch.jpg)
 				</section>
+        <section data-markdown>
+          React & React Components
+        </section>
+
+				<section data-markdown>
+          ## React: JSX
+
+          ```
+          const element = &lt;h1>Hello, world!&lt;/h1>;
+          ```
+
+          * Syntax extension close to HTML that can be included in JS files
+          * Allows to split the code by components and not by markup and logic.
+          * Babel transpiles JXS into standard JavaScript.
+          * Embedding Expressions in JSX
+
+          ```
+          const element = &lt;h1>Hello, world! {21/3}&lt;/h1>;
+          ```
+				</section>
+				<section data-markdown>
+          ## ReactDOM
+
+          ```
+          import React from "react";
+          import ReactDOM from "react-dom";
+          ```
+
+          * Splits the logic of React to the one dealing with the DOM.
+          * React creates a virtual DOM, and only reflects the changes in the Browser.
+          * A react components get render into the browser DOM via `ReactDOM.render`
+
+          ```
+          const element = &lt;h1>Hello, world! {21/3}&lt;/h1>;
+          ```
+				</section>
+        <section data-markdown>
+          ## React: Components
+
+          This 2 ways of defining a React component are equivalent
+
+          ```
+          class HelloWorld extends React.Component {
+            render() {
+              return &lt;h1>Hello, world!&lt;/h1>;
+            }
+          }
+          ```
+
+          ```
+          const HelloWorld = () => (
+            &lt;h1>Hello, world!&lt;/h1>
+          );
+          ```
+
+          Note: Always start component names with a capital letter
+        </section>
+        <section data-markdown>
+          Example
+        </section>
         <section data-markdown>
           ## App placeholder
 
@@ -73,11 +135,13 @@
           class App extends React.Component {
             render() {
               return (
-                &lt;div>
+                &lt;div className="lyrics-app">
                   &lt;header>
-                    &lt;div>Artist Selector&lt;/div>
+                   &lt;div>Artist Selector&lt;/div>
                   &lt;/header>
-                  &lt;div>Song List&lt;/div>
+                  &lt;div className="song-list">
+                   &lt;div>Song List&lt;/div>
+                  &lt;/div>
                   &lt;div>Song Lyrics&lt;/div>
                 &lt;/div>
               );
@@ -86,6 +150,62 @@
           export default App;
 
           ```
+				</section>
+				<section data-markdown>
+          ## Style
+
+          src/index.html
+          ```
+          &lt;!doctype html>
+          &lt;html>
+           &lt;head>
+             &lt;style>
+               html, body {
+                height: 100%;
+                font-family: Helvetica, Verdana, sans-serif;
+                font-size: 16px;
+                padding: 0;
+                margin:0;
+              }
+              .lyrics-app{
+                height: 100%;
+                display: flex;
+                flex-wrap: wrap;
+              }
+              .lyrics-app>header{
+                background-color: #d37867;
+                padding: 1em;
+                width:100%;
+              }
+              .song-list {
+                padding: 0.5em;
+                width: 40%;
+                height: 100%;
+              }
+              .song-list div{
+                margin-top:0.3em;
+              }
+              .song-list a{
+                color: #1270b3;
+                text-decoration: underline;
+                cursor: pointer;
+              }
+              .lyrics {
+                background-color: #f3f3f3;
+                flex-grow: 1;
+                height: 100vh;
+              }
+              .lyrics header{
+                font-weight: bold;
+                font-size: 1.3em;
+              }
+             &lt;/style>
+           &lt;/head>
+           &lt;body>
+              &lt;div id="index" />
+           &lt;/body>
+          &lt;/html>
+```
 				</section>
         <section data-markdown>
           ## Using App in index
@@ -99,6 +219,41 @@
           ReactDOM.render(&lt;App />, document.getElementById("index"));
           ```
 				</section>
+        <section data-markdown>
+          React Props
+        </section>
+        <section data-markdown>
+          ## React: props
+
+          The input of a React component is a __read only__ object call `props`.
+
+          When using a component with JSX the props correspond to the attributes.
+
+          ```
+          function Welcome(props) {
+            return &lt;h1>Hello, {props.name}&lt;/h1>;
+          }
+          const element = &lt;Welcome name="Sara" />;
+          ```
+        </section>
+        <section data-markdown>
+          ## React: props
+
+          When defining a Component extending from `React.Component` the props
+          are store in `this.props`.
+
+          ```
+          class Welcome extends React.Component {
+            render() {
+              return &lt;h1>Hello, {this.props.name}!&lt;/h1>;
+            }
+          }
+          const element = &lt;Welcome name="Sara" />;
+          ```
+        </section>
+        <section data-markdown>
+          Back to our example...
+        </section>
         <section data-markdown>
           ## Artist Selector
 
@@ -135,10 +290,27 @@
             "Queen": ["Bicycle race", "Bohemian Rhapsody", "flash"]
           };
           ...
-          +    &lt;ArtistSelector artists={Object.keys(data)} />
+          +    Songs by &lt;ArtistSelector artists={Object.keys(data)} />
           -    &lt;div>Artist Selector&lt;/div>
           ...
 
+          ```
+        </section>
+        <section data-markdown>
+          ## React.Fragment
+          A component can only render one root element.
+
+          For cases where several elements needs to be return you can use `React.Fragment`
+          ```
+          function Welcome(props) {
+            return (
+              &lt;React.Fragment>
+                &lt;h1>Hello&lt;/h1>;
+                &lt;h2>{props.name}&lt;/h2>;
+              &lt;/React.Fragment>
+            )
+          }
+          const element = &lt;Welcome name="Sara" />;
           ```
         </section>
         <section data-markdown>
@@ -178,6 +350,37 @@
           ```
 				</section>
         <section data-markdown>
+          ## React: Component state
+
+          State is similar to props, but it is private and fully controlled by the component.
+
+          The state is only available when defining the Component as a class.
+
+          You can initialize your state in the `constructor` method, and its value
+          is available in `this.state`.
+
+          The state can't be directly modified. Use `this.setState()` instead.
+        </section>
+        <section data-markdown>
+          ## React: Component state
+
+          ```
+          class Welcome extends React.Component {
+            constructor(props) {
+              super(props);
+              this.state = {greeting: 'Good Morning'}
+            }
+            render() {
+              return &lt;h1>{this.state.greeting}, {this.props.name}!&lt;/h1>;
+            }
+          }
+          const element = &lt;Welcome name="Sara" />;
+          ```
+        </section>
+        <section data-markdown>
+          Lest use the state to define our LyricsDisplay component.
+        </section>
+        <section data-markdown>
           ## LyricsDisplay
 
           src/lyrics-display.js
@@ -193,12 +396,12 @@
           }
 
           class LyricsDisplay extends React.Component {
-            constructor(){
-              super();
+            constructor(props){
+              super(props);
               this.state = {
                 status: STATUS.LOADING,
                 text: null,
-              }
+              };
             }
             render(){
               const {artist, song} = this.props;
@@ -209,7 +412,8 @@
                    {song} by {artist}
                   &lt;/header>
                   &lt;div>
-                    {status===STATUS.LOADING && 'Loading...'}
+                   {status===STATUS.LOADING && 'Loading...'}
+                   {status===STATUS.EMPTY && ''}
                   &lt;/div>
                 &lt;/section>
               );
@@ -232,6 +436,19 @@
           ...
 
           ```
+        </section>
+        <section data-markdown>
+          ## The Data Flows Down
+          The state is encapsulated: It is not accessible to any component other
+          than the one that owns and sets it.
+
+          A component may choose to passed its state down as props to its child components.
+
+          ```
+          &lt;ChildComponent date={this.state.date} />
+          ```
+
+
 				</section>
         <section data-markdown>
           ## Wiring: Top-down
@@ -239,8 +456,8 @@
           src/App.js
           ```
           class App extends React.Component {
-            constructor(){
-              super();
+            constructor(props){
+              super(props);
               this.state={
                 artist:null,
                 song:null,
@@ -261,29 +478,37 @@
           }
           // try $r.setState({artist:"Queen"}) in React console
           ```
+        </section>
+        <section data-markdown>
+          ## React: Event Handling
+
+          * The parent component defines the function that changes its state.
+          * Functions can be passed as props.
+          * The child plugs the function to the required event.
+
+          Note: React provides wider support to forms than the scope of this tutorial.
 				</section>
         <section data-markdown>
           ## Wiring: Bottom-up
           **[Artist]**
 
-          src/artist-selector.js
-          ```
-          ...
-          const ArtistSelector = ({artists=[], onChange=null}) => (
-            &lt;select onChange={onChange}>
-          ...
-
-          ```
           src/App.js
           ```
-          ...
+          ... // Parent component defines the funtion
           handleChange = (evt) => {
             console.log('this is:', evt.target.value);
           }
-          ...
+          ... // Function is be passed as props
             &lt;ArtistSelector artists={Object.keys(data)} onChange={this.handleChange}/>
           ...
+          ```
 
+          src/artist-selector.js
+          ```
+          ... // The child plugs the function
+          const ArtistSelector = ({artists=[], onChange=null}) => (
+            &lt;select onChange={onChange}>
+          ...
           ```
         </section>
         <section data-markdown>
@@ -321,14 +546,6 @@
           ## Wiring: Bottom-up
           **[Song]**
 
-          src/song-list.js
-          ```
-          ...
-          const SongList = ({songs=[], onClick=null}) => (
-          ...
-          &lt;a onClick={onClick}>{song}&lt;/a>
-          ...
-          ```
           src/App.js
           ```
           ...
@@ -338,6 +555,33 @@
           ...
           &lt;SongList songs={artist ? data[artist] : []} onClick={this.handleClick}/>
           ...
+          ```
+
+          src/song-list.js
+          ```
+          ...
+          const SongList = ({songs=[], onClick=null}) => (
+          ...
+          &lt;a onClick={onClick}>{song}&lt;/a>
+          ...
+          ```
+        </section>
+        <section data-markdown>
+          ## Getting Data
+
+          __Fetch__
+          * Fetch provides a generic definition of Request and Response objects.
+          * It returns a promise containing the response.
+          * Promises can be chained as a pipeline.
+
+          ```
+          fetch('http://example.com/movies.json')
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(myJson) {
+              console.log(myJson);
+            });
           ```
         </section>
         <section data-markdown>
@@ -369,8 +613,8 @@
             getData = () => {
               fetch("./data/songsByArtists.json")
                 .then(r=>r.json())
-                .then(r=>{
-                  this.setState({data: r});
+                .then(data=>{
+                  this.setState({data});
                 })
             }
             ...
@@ -381,29 +625,76 @@
           ```
         </section>
         <section data-markdown>
+          ## First Life cycle method
+
+          * React provides 'hooks' to hang our logic in the key execution moments of our component.
+
+          * One of this key moments is when the component is mounted in to the DOM for the first time.
+
+          * To add logic then you should implement the method `componentDidMount()`.
+        </section>
+        <section data-markdown>
+          ## Getting Data
+
+          src/App.js
+          ```
+          class App extends React.Component {
+            constructor(){
+              super();
+              this.state={
+                artist:null,
+                song:null,
+                data:{},
+              }
+          //  this.getData();
+            }
+            ...
+            componentDidMount() {
+              this.getData();
+            }
+            ...
+
+          ```
+        </section>
+
+        <section data-markdown>
+          ## Getting Data
+          **[From an API]**
+
+          https://lyricsovh.docs.apiary.io/
+        </section>
+        <section data-markdown>
           ## Getting Data
           **[From an API]**
 
           src/lyrics-display.js[_uploadLyrics()]
           ```
-          _uploadLyrics = (artist, song)=> {
-            if (artist && song) {
-              fetch(`${api}/${artist}/${song}/`)
-                .then(r=>{
-                  if (!r.ok) throw Error(response.statusText);
-                  return r.json();
-                })
-                .then(r=>{
-                  this.setState({status:STATUS.READY, text:r.lyrics});
-                })
-                .catch(r=>{
-                  this.setState({status:STATUS.FAILED});
-                });
-            }else if(!song){
-              this.setState({status:STATUS.EMPTY});
+          const api = "https://api.lyrics.ovh/v1";
+          ...
+            _uploadLyrics = (artist, song)=> {
+              if (artist && song) {
+                fetch(`${api}/${artist}/${song}/`)
+                  .then(r=>{
+                    if (!r.ok) throw Error(response.statusText);
+                    return r.json();
+                  })
+                  .then(r=>{
+                    this.setState({status:STATUS.READY, text:r.lyrics});
+                  })
+                  .catch(r=>{
+                    this.setState({status:STATUS.FAILED});
+                  });
+              }else if(!song){
+                this.setState({status:STATUS.EMPTY});
+              }
             }
-          }
           ```
+        </section>
+        <section data-markdown>
+          ## React: Lifecycle
+
+          ![Image of the the React Lifecycle](react_lifecycle.jpg)
+          *@dan_abramov*
         </section>
         <section data-markdown>
           ## Getting Data
@@ -411,16 +702,12 @@
 
           src/lyrics-display.js
           ```
-          componentDidMount() {
-            const {artist, song} = this.props;
-            this._uploadLyrics(artist, song);
-          }
-          componentDidUpdate(prevProps) {
-            const {artist, song} = this.props;
-            const {artist:oldArtist, song:oldSong} = prevProps;
-            if (artist!==oldArtist || song!==oldSong)
-              this._uploadLyrics(artist, song);
-          }
+            componentDidUpdate(prevProps) {
+              const {artist, song} = this.props;
+              const {artist:oldArtist, song:oldSong} = prevProps;
+              if (artist!==oldArtist || song!==oldSong)
+                this._uploadLyrics(artist, song);
+            }
           ```
         </section>
         <section data-markdown>
@@ -448,6 +735,9 @@
           }
 
           ```
+        </section>
+        <section data-markdown>
+          ## Thanks! 👍🏼
         </section>
 			</div>
 		</div>
