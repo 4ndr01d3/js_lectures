@@ -30,11 +30,13 @@ class App extends React.Component {
   render() {
     const {artist, song, data} = this.state;
     return (
-      <div>
+      <div className="lyrics-app">
         <header>
-          <ArtistSelector artists={Object.keys(data)} onChange={this.handleChange}/>
+          Lyrics by <ArtistSelector artists={Object.keys(data)} onChange={this.handleChange}/>
         </header>
-        <SongList songs={artist ? data[artist] : []} onClick={this.handleClick}/>
+        <div className="song-list">
+          <SongList songs={artist ? data[artist] : []} onClick={this.handleClick}/>
+        </div>
         <LyricsDisplay artist={artist} song={song}/>
       </div>
     );
